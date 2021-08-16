@@ -6,3 +6,18 @@ Content-Type: application/json
     "name": "Mohammad",
     "isAdmin": 1
 }
+
+###
+
+POST http://localhost:3000/addMongo
+Content-Type: application/json
+
+{
+    "title": "Transaction 2",
+    "content": "18 STX",
+    "author": "Thomas Lefebvre"
+}
+
+###
+
+GET http://localhost:3000/getMongo
