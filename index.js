@@ -1,5 +1,4 @@
 import Express from "express"
-import Data from "./data.js"
 import Connection from "./database.js"
 
 const app = Express()
@@ -7,11 +6,6 @@ const port = 3000
 app.use(Express.json()) //Allows to parse json data into a post method
 app.use(Express.urlencoded({ extended: true }))
 
-app.get("/data/:id",(req, res)=> {
-    res.json(Data.find((data)=> {
-        return req.params.id == data.id
-    }))
-})
 
 app.post('/add', (req, res) => {
     console.log(req.body)
