@@ -1,12 +1,10 @@
 import Express from "express"
 import Connection from "./database.js"
-import { MongoClient } from "mongodb";
 import assert from "assert"
+import mongoClient from "./databseMongo.js"
 
 const app = Express()
 const port = 3000
-
-const url = 'mongodb://localhost:11341/test'
 
 app.use(Express.json()) //Allows to parse json data into a post method
 app.use(Express.urlencoded({ extended: true }))
@@ -37,30 +35,23 @@ app.post('/addMongo', (req, res) => {
         content: req.body.content,
         author: req.body.author
     }
-    MongoClient.connect(url, (err, db) => {
-        assert.equal(null, err)
-        db.collection('rpayUser').insertOne(item, (err, result) => {
-            assert.equal(null, err)
-            console.log(result)
-            db.close();
-        })
-    })
+    mongoClient.connect()
+    const db = mongoClient.db('test')
+    const users = db.collection('rpayUser')
+
+    const result = users.insertOne(item);
+    console.log(result)
 })
 
 app.get('/getMongo', (req, res) => {
     var resultArray = []
-    MongoClient.connect(url, (err, db) => {
-        assert.equal(null, err)
-        const cursor = db.collection('rpayUser').find()
-        cursor.forEach((doc, err) => {
-            assert.equal(null, err)
-            resultArray.push(doc)
-        }, () => {
-            db.close()
-            console.log(resultArray)
-            res.render(resultArray)
-        });
+
+    mongoClient.connect()
+    const cursor = mongoClient.db('test').collection('rpayUser').find()
+    cursor.forEach((doc) => {
+        resultArray.push(doc)
     })
+    console.log(resultArray)
 })
 
 app.listen(port, () => console.log("Listening on port " + port))
