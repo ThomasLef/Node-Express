@@ -1,14 +1,12 @@
 import Express from "express"
 import Connection from "./database.js"
-import assert from "assert"
-import mongoClient from "./databseMongo.js"
+import {addData, getData} from "./databaseMongo.js"
 
 const app = Express()
 const port = 3000
 
 app.use(Express.json()) //Allows to parse json data into a post method
 app.use(Express.urlencoded({ extended: true }))
-
 
 app.post('/add', (req, res) => {
     console.log(req.body)
@@ -35,23 +33,13 @@ app.post('/addMongo', (req, res) => {
         content: req.body.content,
         author: req.body.author
     }
-    mongoClient.connect()
-    const db = mongoClient.db('test')
-    const users = db.collection('rpayUser')
-
-    const result = users.insertOne(item);
-    console.log(result)
+    addData(item, 'test', 'rpayUser')
 })
 
 app.get('/getMongo', (req, res) => {
-    var resultArray = []
-
-    mongoClient.connect()
-    const cursor = mongoClient.db('test').collection('rpayUser').find()
-    cursor.forEach((doc) => {
-        resultArray.push(doc)
-    })
-    console.log(resultArray)
+    const result = getData('test', 'rpayUser')
+    console.log(result)
+    res.send(result)
 })
 
 app.listen(port, () => console.log("Listening on port " + port))
